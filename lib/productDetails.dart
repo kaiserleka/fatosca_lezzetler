@@ -82,13 +82,14 @@ class _ProductDetailsState extends State<ProductDetails> {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.deepOrange,
           onTap: (tabNo) {
             setState(() {
               tabIndex = tabNo;
             });
           },
-          //selectedItemColor: Colors.indigo,
+unselectedItemColor: Colors.deepOrange[100],
+          selectedItemColor: Colors.white,
           currentIndex: tabIndex,
           items: [
             BottomNavigationBarItem(
