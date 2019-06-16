@@ -55,7 +55,7 @@ class Common {
       totalPrice +=
           DataCenter.products[curProductNo].priceValue * curProductAmount;
     }
-    
+
     key.currentState.showBottomSheet<Null>(
       
       
@@ -181,8 +181,20 @@ class Common {
                                       ),
                                     ),
                                     onTap: () {
-                                      print("Yakında");
                                       Navigator.of(context).pop();
+                                      showDialog(
+                                        context: context,
+                                        builder: (context){
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20)
+                                            ),
+                                            backgroundColor: Colors.deepOrange,
+                                            title: Text("Yakında...",textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),
+                                          );
+                                        }
+                                      );
+                                      
                                     },
                                   ),
                                 ])
