@@ -140,7 +140,12 @@ class _HomeState extends State<Home> {
               )),
           Expanded(
             flex: 8,
-            child: GridView.builder(
+            child: (currentProductList.length<=0)?Center(
+              child: Text("Ürün Bulunamadı",style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.grey[800]),),
+            ):GridView.builder(
               itemCount: currentProductList.length,
               gridDelegate:
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
