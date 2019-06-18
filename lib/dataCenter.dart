@@ -3,7 +3,7 @@ import 'package:fatosun_mutfagi/objects/recipe.dart';
 import 'objects/product.dart';
 
 class DataCenter {
-  static List<Product> products = [
+  /*static List<Product> products = [
     Product(
         no: 0,
         name: "Klasik Erişte",
@@ -59,6 +59,6 @@ class DataCenter {
         price: 35,
         category: "Mantı",
         images: ["ispanaklirlieriste"]),*/
-  ];
+  ];*/
   static List<Recipe> recipes = [Recipe(name: "Erişte Dolması")];
 }

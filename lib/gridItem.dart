@@ -19,7 +19,7 @@ class _GridItemState extends State<GridItem> {
       onTap: () {
         // Navigator.pushNamed(context, "productDetails/${widget.curProduct.no}");
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProductDetails(widget.curProduct.no),
+          builder: (context) => ProductDetails(widget.curProduct),
         ));
       },
       child: Hero(
@@ -27,7 +27,7 @@ class _GridItemState extends State<GridItem> {
         child: Card(
             margin: EdgeInsets.all(2),
             child: Container(
-                decoration: BoxDecoration(
+               decoration: BoxDecoration(
                     //   borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
                   image: AssetImage(widget.curProduct.thumbImage),

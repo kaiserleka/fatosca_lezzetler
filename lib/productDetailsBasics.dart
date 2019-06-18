@@ -1,3 +1,4 @@
+import 'package:fatosun_mutfagi/commons/common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -18,18 +19,29 @@ class ProductDetailsBasics extends StatefulWidget {
 }
 
 class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
+  bool isPageLoaded=false;
+  
+  Product detailedProduct;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    isFavoriteControl();
+    Common.getProductDetails(widget.curProduct.no).then((Product reqProduct) {
+      setState(() {
+        detailedProduct = reqProduct;
+      });
+    }).whenComplete(() {
+      isFavoriteControl();
+      isPageLoaded=true;
+      
+    });
   }
 
   bool isFavorite = false;
   //TabController tabController=TabController(initialIndex: 0,length: 2,vsync:this );
 
   isFavoriteControl() async {
-    String curProduct = widget.curProduct.toString();
+    String curProduct = widget.curProduct.no.toString();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFavoriteSitution = false;
     final favoritesList = prefs.getStringList('favoritesList') ?? [];
@@ -46,7 +58,13 @@ class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return  (!isPageLoaded)
+          ? Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.deepOrangeAccent,
+              ),
+            )
+          : Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Expanded(
@@ -71,7 +89,7 @@ class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
               ),
               alignment: Alignment.center,
               child: Text(
-                widget.curProduct.name,
+                detailedProduct.name,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 20,
@@ -85,12 +103,12 @@ class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
         Expanded(
           flex: 10,
           child: Hero(
-            tag: "productDetails${widget.curProduct.no}",
+            tag: "productDetails${detailedProduct.no}",
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    image: AssetImage(widget.curProduct.images[0]),
+                    image: AssetImage(detailedProduct.images[0]),
                     fit: BoxFit.cover,
                   )),
               margin: EdgeInsets.all(10),
@@ -139,12 +157,13 @@ class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
                               ),
                               onPressed: () {
                                 if (isFavorite) {
-                                  Common.removeFromFavorites(widget.curProduct);
+                                  Common.removeFromFavorites(
+                                      widget.curProduct.no);
                                   setState(() {
                                     isFavorite = false;
                                   });
                                 } else {
-                                  Common.addToFavorites(widget.curProduct);
+                                  Common.addToFavorites(widget.curProduct.no);
                                   setState(() {
                                     isFavorite = true;
                                   });
@@ -186,7 +205,7 @@ class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
                               margin: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 20),
                               child: AutoSizeText(
-                                "Fiyat: ${widget.curProduct.priceText}",
+                                "Fiyat: ${detailedProduct.priceText}",
                                 maxLines: 1,
                                 style: TextStyle(
                                     color: Colors.grey[800],
@@ -215,7 +234,8 @@ class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
                                       color: Colors.white,
                                     ))),
                             onTap: () {
-                              Common.addToBasket(widget.scaffoldKey,
+                              // temp :: Common.resetFavorites();
+                               Common.addToBasket(widget.scaffoldKey,
                                   widget.curProduct.no, context);
                               /*.then((result){
                               if (result)

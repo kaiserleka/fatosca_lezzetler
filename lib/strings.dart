@@ -2,5 +2,4 @@
 
 class Strings {
   static String appName="Fatoşça Lezzetler";
-
 }

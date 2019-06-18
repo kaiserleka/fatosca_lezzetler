@@ -11,8 +11,8 @@ import 'dart:io';
 import 'dart:convert';
 
 class ProductDetails extends StatefulWidget {
-  int reqProductNo;
-  ProductDetails(this.reqProductNo);
+  Product reqProduct;
+  ProductDetails(this.reqProduct);
 
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
@@ -33,9 +33,13 @@ class _ProductDetailsState extends State<ProductDetails> {
     //check favorite situation
 
     //
-    getProductDetails();
+    //getProductDetails();
+    setState(() {
+      isPageLoaded = true;
+    });
+    setTabs();
   }
-
+/*
   void getProductDetails() async {
     String url = "http://www.elidakitap.com/ds/products.json";
     var receivedData = await http.get(url, headers: {
@@ -43,7 +47,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     });
     List productDataList = jsonDecode(utf8.decode(receivedData.bodyBytes));
     for (var i = 0; i < productDataList.length; i++) {
-      if (i == widget.reqProductNo) {
+      if (i == widget.reqProduct.no) {
         setState(() {
           curProduct = Product.allDataFromJSON(productDataList[i]);
         });
@@ -54,11 +58,11 @@ class _ProductDetailsState extends State<ProductDetails> {
     });
     setTabs();
   }
-
+*/
   setTabs() {
     setState(() {
       tabs = [
-        ProductDetailsBasics(BasicsKey, curProduct, _scaffoldKey),
+        ProductDetailsBasics(BasicsKey, widget.reqProduct, _scaffoldKey),
         ProducDetailsRecipes(RecipesKey)
       ];
     });

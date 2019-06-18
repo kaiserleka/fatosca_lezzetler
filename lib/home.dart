@@ -6,9 +6,6 @@ import 'objects/product.dart';
 import 'commons/appDrawer.dart';
 import 'gridItem.dart';
 import 'dataCenter.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:io';
 
 class Home extends StatefulWidget {
   @override
@@ -58,26 +55,22 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    currentProductList = productList;
-    getProductList();
+    //assert((isPageLoaded==true),"falsee");
+    //currentProductList = productList;
+    Common.getProductList().then((list){
+      setState((){
+        currentProductList=list;
+      });
+    }).whenComplete(()
+    {
+      setState((){
+        
+        isPageLoaded=true;
+      });
+    });
   }
 
-  void getProductList() async {
-    List<Product> productTempList = [];
-    String url = "http://www.elidakitap.com/ds/products.json";
-    var receivedData = await http.get(url, headers: {
-      HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
-    });
-    List productDataList = jsonDecode(utf8.decode(receivedData.bodyBytes));
-    for (var i = 0; i < productDataList.length; i++) {
-      setState(() {
-        productList.add(Product.previewFromJSON(productDataList[i]));
-      });
-    }
-    setState(() {
-     isPageLoaded=true; 
-    });
-  }
+  
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override

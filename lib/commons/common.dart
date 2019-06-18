@@ -3,6 +3,10 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:fatosun_mutfagi/objects/product.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
 import '../dataCenter.dart';
 
 class Common {
@@ -46,166 +50,182 @@ class Common {
     //print("Sepet: ");
     List<Widget> basketItems = [];
     int totalPrice = 0;
+    List<Product> allItems;
+    getProductList().then((List<Product> productList) {
+      allItems = productList;
+    }).whenComplete(() {
+      for (var i = 0; i < basketList.length; i++) {
+        var list = basketList[i].split("/");
+        int curProductNo = int.parse(list[0]);
+        int curProductAmount = int.parse(list[1]);
+        Product curProduct;
+        for (var j = 0; j < allItems.length; j++) {
+          if (allItems[j].no == curProductNo) {
+            curProduct = allItems[j];
+            basketItems
+                .add(basketItem(i, curProduct, curProductAmount, context));
+            totalPrice += 5;
+            //curProduct.priceValue * curProductAmount;
+            break;
+          }
+        }
 
-    for (var i = 0; i < basketList.length; i++) {
-      var list = basketList[i].split("/");
-      int curProductNo = int.parse(list[0]);
-      int curProductAmount = int.parse(list[1]);
-      basketItems.add(basketItem(i, curProductNo, curProductAmount, context));
-      totalPrice +=
-          DataCenter.products[curProductNo].priceValue * curProductAmount;
-    }
+        //basketItems.add(basketItem(i, curProduct, curProductAmount, context));
+        //
+        //totalPrice +=5;
+        // curProduct.priceValue * curProductAmount;
+      }
 
-    key.currentState.showBottomSheet<Null>(
-      
-      
-      (BuildContext context) {
-      
-      return Container(
-        
-        
-          child: Container(
-              decoration: BoxDecoration(
+      key.currentState.showBottomSheet<Null>((BuildContext context) {
+        return Container(
+            child: Container(
+                decoration: BoxDecoration(
                   color: Colors.deepOrange,
-                 /* borderRadius: BorderRadius.only(
+                  /* borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15))*/),
-              padding: EdgeInsets.all(10),
-              //height: MediaQuery.of(context).size.height * 0.75,
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  // height: MediaQuery.of(context).size.height * 0.65,
-                  decoration: BoxDecoration(
-
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10)
-                     ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Text(
-                        "Sepettekiler",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.indigo[900],
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      Divider(),
-                      (basketItems.length <= 0)
-                          ? Padding(
-                              padding: EdgeInsets.all(10),
-                              child: AutoSizeText(
-                                "Sepette Ürün Bulunamadı",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ))
-                          : Column(
-                              children: basketItems,
-                            ),
-                      ListTile(
-                        title: Text(
-                          "Toplam",
+                      topRight: Radius.circular(15))*/
+                ),
+                padding: EdgeInsets.all(10),
+                //height: MediaQuery.of(context).size.height * 0.75,
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    // height: MediaQuery.of(context).size.height * 0.65,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Text(
+                          "Sepettekiler",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.indigo[900],
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        trailing: Text(
-                          "$totalPrice TL",
-                          style: TextStyle(
-                              color: Colors.green[900],
                               fontSize: 20,
                               fontWeight: FontWeight.w600),
                         ),
-                      ),
-                      //sepettekilerin toplamı 0 tl ise ödeme butonunu gösterme
-                      (totalPrice <= 0)
-                          ? SizedBox()
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                  GestureDetector(
-                                    child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                                //spreadRadius: 10,
-                                                color: Colors.grey,
-                                                blurRadius: 1.5,
-                                                offset: Offset(1.0, 1.0))
-                                          ],
-                                          border: Border.all(
-                                              color: Colors.deepOrange),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Text(
-                                        "Sepeti Boşalt",
-                                        style: TextStyle(
-                                            color: Colors.deepOrange,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      print("Sepet Boşaltıldı");
-                                      Common.cleanBasket();
-                                      Navigator.of(context).pop();
-                                    },
+                        Divider(),
+                        (basketItems.length <= 0)
+                            ? Padding(
+                                padding: EdgeInsets.all(10),
+                                child: AutoSizeText(
+                                  "Sepette Ürün Bulunamadı",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
                                   ),
-                                  GestureDetector(
-                                    child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                                //spreadRadius: 10,
-                                                color: Colors.grey,
-                                                blurRadius: 1.5,
-                                                offset: Offset(1.0, 1.0))
-                                          ],
-                                          color: Colors.deepOrange,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      child: Text(
-                                        "Ödeme Yap",
-                                        style: TextStyle(
+                                ))
+                            : Column(
+                                children: basketItems,
+                              ),
+                        ListTile(
+                          title: Text(
+                            "Toplam",
+                            style: TextStyle(
+                                color: Colors.indigo[900],
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          trailing: Text(
+                            "$totalPrice TL",
+                            style: TextStyle(
+                                color: Colors.green[900],
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        //sepettekilerin toplamı 0 tl ise ödeme butonunu gösterme
+                        (totalPrice <= 0)
+                            ? SizedBox()
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                    GestureDetector(
+                                      child: Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
                                             color: Colors.white,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  //spreadRadius: 10,
+                                                  color: Colors.grey,
+                                                  blurRadius: 1.5,
+                                                  offset: Offset(1.0, 1.0))
+                                            ],
+                                            border: Border.all(
+                                                color: Colors.deepOrange),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Text(
+                                          "Sepeti Boşalt",
+                                          style: TextStyle(
+                                              color: Colors.deepOrange,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600),
+                                        ),
                                       ),
+                                      onTap: () {
+                                        print("Sepet Boşaltıldı");
+                                        Common.cleanBasket();
+                                        Navigator.of(context).pop();
+                                      },
                                     ),
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                      showDialog(
-                                        context: context,
-                                        builder: (context){
-                                          return AlertDialog(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20)
-                                            ),
-                                            backgroundColor: Colors.deepOrange,
-                                            title: Text("Yakında...",textAlign: TextAlign.center,style: TextStyle(color: Colors.white),),
-                                          );
-                                        }
-                                      );
-                                      
-                                    },
-                                  ),
-                                ])
-                    ],
+                                    GestureDetector(
+                                      child: Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  //spreadRadius: 10,
+                                                  color: Colors.grey,
+                                                  blurRadius: 1.5,
+                                                  offset: Offset(1.0, 1.0))
+                                            ],
+                                            color: Colors.deepOrange,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Text(
+                                          "Ödeme Yap",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20)),
+                                                backgroundColor:
+                                                    Colors.deepOrange,
+                                                title: Text(
+                                                  "Yakında...",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              );
+                                            });
+                                      },
+                                    ),
+                                  ])
+                      ],
+                    ),
                   ),
-                ),
-              )));
+                )));
+      });
     });
   }
 
-  static Widget basketItem(index, productNo, productAmount, context) {
+  static Widget basketItem(index, Product product, productAmount, context) {
     return Card(
         child: Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -214,7 +234,7 @@ class Common {
         children: <Widget>[
           Expanded(
             flex: 9,
-            child: AutoSizeText(DataCenter.products[productNo].name,
+            child: AutoSizeText(product.name,
                 style: TextStyle(
                   fontSize: 15,
                 )),
@@ -296,21 +316,28 @@ class Common {
   }
 
   static addToFavorites(reqProductNo) async {
-    String curProduct = reqProductNo.toString();
+    String curProductNo = reqProductNo.toString();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final favoritesList = prefs.getStringList('favoritesList') ?? [];
-    favoritesList.add(curProduct);
+    favoritesList.add(curProductNo);
     prefs.setStringList('favoritesList', favoritesList).then((sit) {
       print("favorilendi");
     });
   }
 
+  static resetFavorites() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('favoritesList', []).then((sit) {
+      print("favoriler resetlendi");
+    });
+  }
+
   static removeFromFavorites(reqProductNo) async {
-    String curProduct = reqProductNo.toString();
+    String curProductNo = reqProductNo.toString();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final favoritesList = prefs.getStringList('favoritesList') ?? [];
     for (var i = 0; i < favoritesList.length; i++) {
-      if (favoritesList[i] == curProduct) {
+      if (favoritesList[i] == curProductNo) {
         favoritesList.removeAt(i);
         print(":: beğenilenlerden çıkarıldı");
         break;
@@ -325,5 +352,51 @@ class Common {
     }).catchError((er) {
       print(er.toString());
     });
+  }
+
+  static Future<List<Product>> getProductList({favorites}) async {
+    List<Product> productTempList = [];
+    String url;
+    if(favorites==null){
+      url= "http://www.elidakitap.com/ds/products.json";
+    }else{
+      url="http://www.elidakitap.com/ds/product.php?";
+      for(var i=0;i<favorites.length;i++){
+        url+="no[]="+favorites[i].toString();
+        if(i!=favorites.length-1){
+          url+="&";
+        }
+      }
+
+    }
+    var receivedData = await http.get(url, headers: {
+      HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
+    });
+    List productDataList = jsonDecode(utf8.decode(receivedData.bodyBytes));
+    for (var i = 0; i < productDataList.length; i++) {
+      productTempList.add(Product.previewFromJSON(productDataList[i]));
+    }
+    return productTempList;
+    /* setState(() {
+     isPageLoaded=true; 
+    });*/
+  }
+
+  static Future<Product> getProductDetails(productNo) async {
+    //print("** "+productNo.toString());
+    Product tempProduct;
+    String url = "http://www.elidakitap.com/ds/product.php?no[]=$productNo";
+    var receivedData = await http.get(url, headers: {
+      HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
+    });
+    var productList = jsonDecode(utf8.decode(receivedData.bodyBytes));
+    var productData=productList[0];
+    tempProduct = Product.allDataFromJSON(productData);
+    //print("founded !");
+    return tempProduct;
+
+    /* setState(() {
+     isPageLoaded=true; 
+    });*/
   }
 }

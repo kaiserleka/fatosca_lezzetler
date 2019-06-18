@@ -30,10 +30,10 @@ class MyApp extends StatelessWidget {
         List<String> pathElements = settings.name.split("/");
         //for(var pth in pathElements)
         //debugPrint("path :"+pth);
-        if (pathElements[0] == "productDetails") {
+        /*if (pathElements[0] == "productDetails") {
           return MaterialPageRoute(
               builder: (context) => ProductDetails(int.parse(pathElements[1])));
-        } else if (pathElements[0] == "recipeDetails") {
+        } else */if (pathElements[0] == "recipeDetails") {
           return MaterialPageRoute(
               builder: (context) => RecipeDetails(int.parse(pathElements[1])));
         }
