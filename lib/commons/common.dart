@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:fatosun_mutfagi/tools/customAlertDialog.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,7 +52,7 @@ class Common {
     List<Widget> basketItems = [];
     int totalPrice = 0;
     List<Product> allItems;
-    getProductList().then((List<Product> productList) {
+    getProductList(context: context).then((List<Product> productList) {
       allItems = productList;
     }).whenComplete(() {
       for (var i = 0; i < basketList.length; i++) {
@@ -78,12 +79,19 @@ class Common {
 
       key.currentState.showBottomSheet<Null>((BuildContext context) {
         return Container(
+            //margin: EdgeInsets.all(0),
+            //data: Theme.of(context).copyWith(canvasColor: Colors.red,
+            //backgroundColor: Colors.blue),
+            color: Colors.transparent,
+            //shape: RoundedRectangleBorder(
+            //borderRadius: BorderRadius.circular(25)
+
             child: Container(
                 decoration: BoxDecoration(
                   color: Colors.deepOrange,
-                  /* borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15))*/
+                  // borderRadius: BorderRadius.only(
+                  //   topLeft: Radius.circular(25),
+                  // topRight: Radius.circular(25))
                 ),
                 padding: EdgeInsets.all(10),
                 //height: MediaQuery.of(context).size.height * 0.75,
@@ -199,20 +207,9 @@ class Common {
                                         showDialog(
                                             context: context,
                                             builder: (context) {
-                                              return AlertDialog(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20)),
-                                                backgroundColor:
-                                                    Colors.deepOrange,
-                                                title: Text(
+                                              return CustomAlertDialog(
                                                   "Yakında...",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                              );
+                                                  Colors.deepOrange);
                                             });
                                       },
                                     ),
@@ -354,25 +351,56 @@ class Common {
     });
   }
 
-  static Future<List<Product>> getProductList({favorites}) async {
+  static Future<List<Product>> getProductList({favorites, context}) async {
     List<Product> productTempList = [];
+    String errorText = "";
     String url;
-    if(favorites==null){
-      url= "http://www.elidakitap.com/ds/products.json";
-    }else{
-      url="http://www.elidakitap.com/ds/product.php?";
-      for(var i=0;i<favorites.length;i++){
-        url+="no[]="+favorites[i].toString();
-        if(i!=favorites.length-1){
-          url+="&";
+    if (favorites == null) {
+      url = "http://www.elidakitap.com/fatoscalezzetler/products.json";
+    } else {
+      url = "http://www.elidakitap.com/fatoscalezzetler/product.php?";
+      for (var i = 0; i < favorites.length; i++) {
+        url += "no[]=" + favorites[i].toString();
+        if (i != favorites.length - 1) {
+          url += "&";
         }
       }
-
     }
-    var receivedData = await http.get(url, headers: {
+    List productDataList = [];
+    //
+    //http.Response receivedData =
+    await http.get(url, headers: {
       HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
+    }).then((resultData) {
+      print("Bağlantı var " + resultData.statusCode.toString());
+      if (resultData.statusCode == 200) {
+        productDataList = jsonDecode(utf8.decode(resultData.bodyBytes));
+      } else {
+        productDataList = [];
+        print("Bağlantı Hatası\n" + resultData.statusCode.toString());
+        switch (resultData.statusCode) {
+          case 404:
+            errorText = "Bağlantı Sayfası Bulunamadı";
+            break;
+          default:
+            errorText = "Bağlantı Hatası";
+        }
+        showDialog(
+            context: context,
+            builder: (context) {
+              return CustomAlertDialog(errorText, Colors.red);
+            });
+      }
+    }).catchError((err) {
+      print("Sunucu Hatası " + err.toString());
+      errorText = "Sunucu Hatası";
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomAlertDialog(errorText, Colors.red);
+          });
     });
-    List productDataList = jsonDecode(utf8.decode(receivedData.bodyBytes));
+
     for (var i = 0; i < productDataList.length; i++) {
       productTempList.add(Product.previewFromJSON(productDataList[i]));
     }
@@ -385,12 +413,13 @@ class Common {
   static Future<Product> getProductDetails(productNo) async {
     //print("** "+productNo.toString());
     Product tempProduct;
-    String url = "http://www.elidakitap.com/ds/product.php?no[]=$productNo";
+    String url =
+        "http://www.elidakitap.com/fatoscalezzetler/product.php?no[]=$productNo";
     var receivedData = await http.get(url, headers: {
       HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
     });
     var productList = jsonDecode(utf8.decode(receivedData.bodyBytes));
-    var productData=productList[0];
+    var productData = productList[0];
     tempProduct = Product.allDataFromJSON(productData);
     //print("founded !");
     return tempProduct;
@@ -399,4 +428,5 @@ class Common {
      isPageLoaded=true; 
     });*/
   }
+
 }

@@ -1,3 +1,4 @@
+import 'package:fatosun_mutfagi/commons/categories.dart';
 import 'package:fatosun_mutfagi/commons/common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class _HomeState extends State<Home> {
   List currentProductList = [];
   String categoryHint = "Tüm Ürünler";
 
-  bool isPageLoaded=false;
+  bool isPageLoaded = false;
 
   List<DropdownMenuItem> items = [
     DropdownMenuItem(
@@ -26,7 +27,7 @@ class _HomeState extends State<Home> {
           "Tüm Ürünler",
           style: TextStyle(fontWeight: FontWeight.w700),
         )),
-    DropdownMenuItem(
+    /*DropdownMenuItem(
         value: "Erişte",
         child: Text(
           "Erişte",
@@ -49,7 +50,7 @@ class _HomeState extends State<Home> {
         child: Text(
           "Tatlılar",
           style: TextStyle(fontWeight: FontWeight.w500),
-        )),
+        )),*/
   ];
   @override
   void initState() {
@@ -57,20 +58,36 @@ class _HomeState extends State<Home> {
     super.initState();
     //assert((isPageLoaded==true),"falsee");
     //currentProductList = productList;
-    Common.getProductList().then((list){
-      setState((){
-        currentProductList=list;
+
+    getCategoriesItems();
+    Common.getProductList(context: context).then((list) {
+      setState(() {
+        currentProductList = list;
+        productList = currentProductList;
       });
-    }).whenComplete(()
-    {
-      setState((){
-        
-        isPageLoaded=true;
+    }).whenComplete(() {
+      setState(() {
+        isPageLoaded = true;
       });
     });
   }
 
-  
+  getCategoriesItems() {
+    CommonCategories.getCategories(context).then((categoriesMap) {
+      categoriesMap["categories"].forEach((categoryName) {
+        setState(() {
+          items.add(
+            DropdownMenuItem(
+                value: categoryName,
+                child: Text(
+                  categoryName,
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                )),
+          );
+        });
+      });
+    });
+  }
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
@@ -91,64 +108,76 @@ class _HomeState extends State<Home> {
         ],
       ),
       drawer: AppDrawer(),
-      body: (!isPageLoaded)?Center(child: CircularProgressIndicator(
-        backgroundColor: Colors.deepOrangeAccent,
-      ),):Container(
-          //color: Colors.deepOrange[50],
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: Image(
-              image: AssetImage("assets/interface/bakery2.jpg"),
-              fit: BoxFit.cover,
-            ),
-          ),
-          Expanded(
-              flex: 1,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 13),
-                color: Colors.white,
-                child: DropdownButton(
-                  underline: SizedBox(),
-                  hint: Container(
-                    // alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      categoryHint,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.grey[800]),
+      body: (!isPageLoaded)
+          ? Container(
+              color: Colors.grey[200],
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.deepOrangeAccent,
+              ),
+            )
+          : Container(
+              color: Colors.grey[200],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: Image(
+                      image: AssetImage("assets/interface/bakery2.jpg"),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  value: null,
-                  items: items,
-                  onChanged: (reqValue) {
-                    updateDisplayedProducts(reqValue);
-                  },
-                ),
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 13),
+                        color: Colors.white,
+                        child: DropdownButton(
+                          underline: SizedBox(),
+                          hint: Container(
+                            // alignment: Alignment.center,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              categoryHint,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.grey[800]),
+                            ),
+                          ),
+                          value: null,
+                          items: items,
+                          onChanged: (reqValue) {
+                            updateDisplayedProducts(reqValue);
+                          },
+                        ),
+                      )),
+                  Expanded(
+                    flex: 8,
+                    child: (currentProductList.length <= 0)
+                        ? Center(
+                            child: Text(
+                              "Ürün Bulunamadı",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.grey[800]),
+                            ),
+                          )
+                        : GridView.builder(
+                            itemCount: currentProductList.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2),
+                            itemBuilder: (context, index) {
+                              return GridItem(currentProductList[index]);
+                            },
+                          ),
+                  )
+                ],
               )),
-          Expanded(
-            flex: 8,
-            child: (currentProductList.length<=0)?Center(
-              child: Text("Ürün Bulunamadı",style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.grey[800]),),
-            ):GridView.builder(
-              itemCount: currentProductList.length,
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-              itemBuilder: (context, index) {
-                return GridItem(currentProductList[index]);
-              },
-            ),
-          )
-        ],
-      )),
     );
   }
 
@@ -156,15 +185,13 @@ class _HomeState extends State<Home> {
     var curList = [];
     if (reqValue == "Tüm Ürünler") {
       for (var i = 0; i < productList.length; i++) {
-        // if(productList[i].category==reqValue)
         curList.add(productList[i]);
       }
     } else {
       for (var i = 0; i < productList.length; i++) {
-        if (productList[i].category == reqValue) curList.add(productList[i]);
+         if (productList[i].category == reqValue) curList.add(productList[i]);
       }
     }
-
     setState(() {
       categoryHint = reqValue;
       currentProductList = curList;

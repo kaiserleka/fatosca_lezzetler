@@ -17,8 +17,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.deepOrange,
           backgroundColor: Colors.deepOrange[50],
-          scaffoldBackgroundColor: Colors.grey[200],//[100],
-          //canvasColor: Colors.white
+          scaffoldBackgroundColor: Colors.grey[100],
+          
+         // canvasColor: Colors.transparent
           ),
       debugShowCheckedModeBanner: false,
       routes: {

@@ -14,10 +14,13 @@ class _ProducDetailsRecipesState extends State<ProducDetailsRecipes> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.center,
         child: SingleChildScrollView(
       child: Column(
+       // mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          showRecipe(1),
+          Center(child: Text("Yakında"),),
+          /*showRecipe(1),
           showRecipe(2),
           showRecipe(3),
           showRecipe(1),
@@ -37,7 +40,7 @@ class _ProducDetailsRecipesState extends State<ProducDetailsRecipes> {
           showRecipe(3),
           showRecipe(1),
           showRecipe(2),
-          showRecipe(3)
+          showRecipe(3)*/
         ],
       ),
     ));

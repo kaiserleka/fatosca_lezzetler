@@ -16,7 +16,7 @@ class Favorites extends StatefulWidget {
 
 class _FavoritesState extends State<Favorites> {
   bool isPageLoaded = false;
-  List<int> favoriteProductNos= [];
+  List<int> favoriteProductNos = [];
   List allProducts = [];
   List<Product> favoriteProducts = [
     //DataCenter.products[0],
@@ -46,9 +46,10 @@ class _FavoritesState extends State<Favorites> {
       tempList.add(int.parse(favoritesList[i]));
     }
     favoriteProductNos = tempList;
-    Common.getProductList(favorites: favoriteProductNos).then((list) {
+    Common.getProductList(favorites: favoriteProductNos, context: context)
+        .then((list) {
       setState(() {
-          favoriteProducts = list;
+        favoriteProducts = list;
       });
     }).whenComplete(() {
       setState(() {
@@ -59,6 +60,16 @@ class _FavoritesState extends State<Favorites> {
 
   @override
   Widget build(BuildContext context) {
+    return scaffold();/*WillPopScope(
+      child: scaffold(),
+      onWillPop: (){
+        print("back");
+        //return Future<false;
+      },
+    );*/
+  }
+
+  scaffold() {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -74,7 +85,7 @@ class _FavoritesState extends State<Favorites> {
           )
         ],
       ),
-      drawer: AppDrawer(),
+      //drawer: AppDrawer(),
       body: (!isPageLoaded)
           ? Center(
               child: CircularProgressIndicator(
@@ -165,9 +176,12 @@ class _FavoritesState extends State<Favorites> {
                 Expanded(
                     flex: 6,
                     child: Container(
-                        alignment: Alignment.center,
-                        //color: Colors.yellow,
-                        child: ListView.builder(
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Text("Yakında"),
+                      ),
+                      //color: Colors.yellow,
+                      /* child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: favoriteRecipes.length,
                           itemBuilder: (context, index) {
@@ -178,13 +192,10 @@ class _FavoritesState extends State<Favorites> {
                                   favoriteRecipes[index],
                                 ));
                           },
-                        ))),
+                        )*/
+                    )),
               ],
             ),
     );
-  }
-
-  Widget productItem() {
-    //return //Gri;
   }
 }
