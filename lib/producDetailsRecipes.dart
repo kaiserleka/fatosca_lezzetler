@@ -19,7 +19,7 @@ class _ProducDetailsRecipesState extends State<ProducDetailsRecipes> {
       child: Column(
        // mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Center(child: Text("Yakında"),),
+          Center(child: Text("Tarif bulunamadı"),),
           /*showRecipe(1),
           showRecipe(2),
           showRecipe(3),

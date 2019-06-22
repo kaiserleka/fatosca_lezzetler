@@ -196,7 +196,7 @@ class Common {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         child: Text(
-                                          "Ödeme Yap",
+                                          " Sipariş Ver ",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 15,

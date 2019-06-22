@@ -62,7 +62,7 @@ class _ContactState extends State<Contact> {
                       contactItem(Icons.call, "Telefon", "-"),
                       contactItem(
                           Icons.email, "E-Posta", "-"),
-                      contactItem(Icons.camera_alt, "Instagram", "-")
+                      contactItem(Icons.camera_alt, "Instagram", "@fatosca_lezzetler")
                     ],
                   ))
             ])));

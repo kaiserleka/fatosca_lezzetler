@@ -178,7 +178,7 @@ class _FavoritesState extends State<Favorites> {
                     child: Container(
                       alignment: Alignment.center,
                       child: Center(
-                        child: Text("Yakında"),
+                        child: Text("Beğenilen tarif bulunamadı"),
                       ),
                       //color: Colors.yellow,
                       /* child: ListView.builder(

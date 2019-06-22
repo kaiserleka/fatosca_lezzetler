@@ -131,7 +131,8 @@ class _HomeState extends State<Home> {
                   Expanded(
                       flex: 1,
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 13),
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
                         color: Colors.white,
                         child: DropdownButton(
                           underline: SizedBox(),
