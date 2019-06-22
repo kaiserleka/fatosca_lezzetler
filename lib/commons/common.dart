@@ -8,6 +8,7 @@ import 'package:fatosun_mutfagi/objects/product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 import '../dataCenter.dart';
 
 class Common {
@@ -203,14 +204,16 @@ class Common {
                                         ),
                                       ),
                                       onTap: () {
-                                        Navigator.of(context).pop();
+
+                                        callInstagram();
+                                       /* Navigator.of(context).pop();
                                         showDialog(
                                             context: context,
                                             builder: (context) {
                                               return CustomAlertDialog(
                                                   "Yakında...",
                                                   Colors.deepOrange);
-                                            });
+                                            });*/
                                       },
                                     ),
                                   ])
@@ -372,7 +375,7 @@ class Common {
     await http.get(url, headers: {
       HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
     }).then((resultData) {
-      print("Bağlantı var " + resultData.statusCode.toString());
+      //print("Bağlantı var " + resultData.statusCode.toString());
       if (resultData.statusCode == 200) {
         productDataList = jsonDecode(utf8.decode(resultData.bodyBytes));
       } else {
@@ -427,6 +430,15 @@ class Common {
     /* setState(() {
      isPageLoaded=true; 
     });*/
+  }
+
+  static callInstagram() async {
+    var instagramUrl =
+        "https://www.instagram.com/fatosca_lezzetler/";
+    await canLaunch(instagramUrl)
+        ? launch(instagramUrl)
+        : print(
+            "open whatsapp app link or do a snackbar with notification that there is no whatsapp installed");
   }
 
 }

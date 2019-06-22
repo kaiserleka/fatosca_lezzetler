@@ -92,9 +92,8 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget drawerItem({title, target}) {
     return GestureDetector(
       child: Card(
-
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10)
+          borderRadius: BorderRadius.circular(17)
         ),
         color: Colors.deepOrangeAccent[700].withOpacity(0.7),
         margin: EdgeInsets.all(10),

@@ -85,7 +85,7 @@ class _FavoritesState extends State<Favorites> {
           )
         ],
       ),
-      //drawer: AppDrawer(),
+      drawer: AppDrawer(),
       body: (!isPageLoaded)
           ? Center(
               child: CircularProgressIndicator(
