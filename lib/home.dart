@@ -32,10 +32,11 @@ class _HomeState extends State<Home> {
   String textValue;
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   update(String token) {
-    print("- / - "+token);
+    print("- / - " + token);
     textValue = token;
     setState(() {});
   }
+
   //ctm/
   @override
   void initState() {
@@ -56,12 +57,12 @@ class _HomeState extends State<Home> {
       });
     });
     //cfm
-     firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
+    firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
       print("onLaunch called");
     }, onResume: (Map<String, dynamic> msg) {
       print("onResume called");
     }, onMessage: (Map<String, dynamic> msg) {
-      print("onMessage called"+msg.toString());
+      print("onMessage called" + msg.toString());
     });
     firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(sound: true, alert: true, badge: true));
@@ -72,7 +73,6 @@ class _HomeState extends State<Home> {
     firebaseMessaging.getToken().then((token) {
       update(token);
     });
-
   }
 
   getCategoriesItems() {
@@ -170,14 +170,21 @@ class _HomeState extends State<Home> {
                                   color: Colors.grey[800]),
                             ),
                           )
-                        : GridView.builder(
-                            itemCount: currentProductList.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2),
-                            itemBuilder: (context, index) {
-                              return GridItem(currentProductList[index]);
-                            },
+                        : OrientationBuilder(
+                            builder: (context, curOrientation) {
+                             
+
+                                return GridView.builder(
+                                  itemCount: currentProductList.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: (curOrientation==Orientation.portrait)?2:3),
+                                  itemBuilder: (context, index) {
+                                    return GridItem(currentProductList[index]);
+                                  },
+                                );
+                              }
+                            
                           ),
                   )
                 ],
@@ -193,7 +200,7 @@ class _HomeState extends State<Home> {
       }
     } else {
       for (var i = 0; i < productList.length; i++) {
-         if (productList[i].category == reqValue) curList.add(productList[i]);
+        if (productList[i].category == reqValue) curList.add(productList[i]);
       }
     }
     setState(() {
