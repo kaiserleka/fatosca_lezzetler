@@ -30,7 +30,7 @@ class _GridItemState extends State<GridItem> {
                decoration: BoxDecoration(
                     //   borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
-                  image: AssetImage(widget.curProduct.thumbImage),
+                  image: NetworkImage(widget.curProduct.thumbImage),
                   fit: BoxFit.cover,
                 )),
                 alignment: Alignment.bottomCenter,

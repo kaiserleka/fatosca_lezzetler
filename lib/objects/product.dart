@@ -1,3 +1,5 @@
+import 'package:fatosun_mutfagi/strings.dart';
+
 class Product {
   int no;// = 1;
   String name;
@@ -35,10 +37,10 @@ class Product {
   List get images {
     List<String> list = [];
     for (var i = 0; i < this._images.length; i++) {
-      list.add("assets/products/" + this._images[i] + ".png");
+      list.add(Strings.sourceURL +"products/" + this._images[i] + ".png");
     }
     return list;
   }
-  String get thumbImage => "assets/products/thumb/_" + _thumbImage + ".png";
+  String get thumbImage => Strings.sourceURL +"products/thumb/_" + _thumbImage + ".png";
   String get category => this._category;
 }

@@ -6,6 +6,8 @@ import 'home.dart';
 import 'productDetails.dart';
 import 'favorites.dart';
 
+
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {

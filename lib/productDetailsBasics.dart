@@ -108,7 +108,7 @@ class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    image: AssetImage(detailedProduct.images[0]),
+                    image: NetworkImage(detailedProduct.images[0]),
                     fit: BoxFit.cover,
                   )),
               margin: EdgeInsets.all(10),

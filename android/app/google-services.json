@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "63672456464",
+    "firebase_url": "https://fatosca-lezzetler.firebaseio.com",
+    "project_id": "fatosca-lezzetler",
+    "storage_bucket": "fatosca-lezzetler.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63672456464:android:a031af1c9a00b9e4",
+        "android_client_info": {
+          "package_name": "com.lekadesignandapps.fatoscalezzetler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63672456464-d2ng31o9fuhm42ec5jdn4d0vkpcu22ph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGIE8QO0NvAjxgc5zPi4u9YI6Ibvkm5Xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "63672456464-d2ng31o9fuhm42ec5jdn4d0vkpcu22ph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

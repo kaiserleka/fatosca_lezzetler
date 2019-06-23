@@ -6,7 +6,7 @@ import 'strings.dart';
 import 'objects/product.dart';
 import 'commons/appDrawer.dart';
 import 'gridItem.dart';
-import 'dataCenter.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -27,31 +27,16 @@ class _HomeState extends State<Home> {
           "Tüm Ürünler",
           style: TextStyle(fontWeight: FontWeight.w700),
         )),
-    /*DropdownMenuItem(
-        value: "Erişte",
-        child: Text(
-          "Erişte",
-          style: TextStyle(fontWeight: FontWeight.w500),
-        )),
-    DropdownMenuItem(
-        value: "Mantı",
-        child: Text(
-          "Mantı",
-          style: TextStyle(fontWeight: FontWeight.w500),
-        )),
-    DropdownMenuItem(
-        value: "Zeytinyağlılar",
-        child: Text(
-          "Zeytinyağlılar",
-          style: TextStyle(fontWeight: FontWeight.w500),
-        )),
-    DropdownMenuItem(
-        value: "Tatlılar",
-        child: Text(
-          "Tatlılar",
-          style: TextStyle(fontWeight: FontWeight.w500),
-        )),*/
   ];
+  //cfm
+  String textValue;
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  update(String token) {
+    print("- / - "+token);
+    textValue = token;
+    setState(() {});
+  }
+  //ctm/
   @override
   void initState() {
     // TODO: implement initState
@@ -70,6 +55,24 @@ class _HomeState extends State<Home> {
         isPageLoaded = true;
       });
     });
+    //cfm
+     firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
+      print("onLaunch called");
+    }, onResume: (Map<String, dynamic> msg) {
+      print("onResume called");
+    }, onMessage: (Map<String, dynamic> msg) {
+      print("onMessage called"+msg.toString());
+    });
+    firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, alert: true, badge: true));
+    /*firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings setting) {
+      print("IOS setting registed");
+    });*/
+    firebaseMessaging.getToken().then((token) {
+      update(token);
+    });
+
   }
 
   getCategoriesItems() {
