@@ -19,8 +19,8 @@ class ProductDetailsBasics extends StatefulWidget {
 }
 
 class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
-  bool isPageLoaded=false;
-  
+  bool isPageLoaded = false;
+
   Product detailedProduct;
   @override
   void initState() {
@@ -32,8 +32,7 @@ class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
       });
     }).whenComplete(() {
       isFavoriteControl();
-      isPageLoaded=true;
-      
+      isPageLoaded = true;
     });
   }
 
@@ -58,196 +57,215 @@ class _ProductDetailsBasicsState extends State<ProductDetailsBasics> {
 
   @override
   Widget build(BuildContext context) {
-    return  (!isPageLoaded)
-          ? Center(
-              child: CircularProgressIndicator(
-                backgroundColor: Colors.deepOrangeAccent,
-              ),
-            )
-          : Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Expanded(
-          flex: 1,
-          child: Card(
-            margin: EdgeInsets.symmetric(horizontal: 10),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(15))
-                //side: BorderSide(
-                //width: 0
-                //  color: Colors.deepOrange,
-                //)
-                ),
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
-                ),
-                color: Colors.white,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                detailedProduct.name,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
-                  color: Colors.deepOrange[700], // grey[800]
-                ),
-                textAlign: TextAlign.center,
-              ),
+    return (!isPageLoaded)
+        ? Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.deepOrangeAccent,
             ),
-          ),
+          )
+        : OrientationBuilder(
+            builder: (context, curOrientation) {
+              if (curOrientation == Orientation.portrait) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Expanded(flex: 1, child: titleCard()),
+                    Expanded(flex: 10, child: imageCard()),
+                    Expanded(
+                      flex: 2,
+                      child: activityCard(),
+                    ),
+                  ],
+                );
+              } else {
+                return Row(
+                 // crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Expanded(flex: 2, child: imageCard()),
+                    Expanded(
+                      flex: 2,
+                      child: Column(children: [
+                        Expanded(flex: 2, child: titleCard()),
+                        Expanded(flex: 1, child: activityCard())
+                      ]),
+                    ),
+                  ],
+                );
+              }
+            },
+          );
+  }
+
+  Widget imageCard() {
+    return Hero(
+      tag: "productDetails${detailedProduct.no}",
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            image: DecorationImage(
+              image: NetworkImage(detailedProduct.images[0]),
+              fit: BoxFit.cover,
+            )),
+        margin: EdgeInsets.all(10),
+      ),
+    );
+  }
+
+  Widget favoriteCard() {
+    return Card(
+      shape: CircleBorder(
+          side: BorderSide(
+        color: Colors.deepOrange.withOpacity(0.6),
+      )),
+      color: Colors.white,
+      child: IconButton(
+        tooltip: "Beğen",
+        icon: Icon(
+          (isFavorite) ? Icons.favorite : Icons.favorite_border,
+          color: (isFavorite) ? Colors.red : Colors.deepOrange[700],
         ),
-        Expanded(
-          flex: 10,
-          child: Hero(
-            tag: "productDetails${detailedProduct.no}",
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  image: DecorationImage(
-                    image: NetworkImage(detailedProduct.images[0]),
-                    fit: BoxFit.cover,
-                  )),
-              margin: EdgeInsets.all(10),
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 2,
-          child: Card(
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-                //side: BorderSide(
-                //width: 0
-                //  color: Colors.deepOrange,
-                //)
-              ),
-              child: Container(
-                  padding: EdgeInsets.all(5),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: Colors.white, //.deepOrange,
-                      border: Border(),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                          flex: 1,
-                          child: Card(
-                            shape: CircleBorder(
-                                side: BorderSide(
-                              color: Colors.deepOrange.withOpacity(0.6),
-                            )),
-                            color: Colors.white,
-                            child: IconButton(
-                              tooltip: "Beğen",
-                              icon: Icon(
-                                (isFavorite)
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: (isFavorite)
-                                    ? Colors.red
-                                    : Colors.deepOrange[700],
-                              ),
-                              onPressed: () {
-                                if (isFavorite) {
-                                  Common.removeFromFavorites(
-                                      widget.curProduct.no);
-                                  setState(() {
-                                    isFavorite = false;
-                                  });
-                                } else {
-                                  Common.addToFavorites(widget.curProduct.no);
-                                  setState(() {
-                                    isFavorite = true;
-                                  });
-                                }
-                              },
-                            ),
-                          )),
-                      Expanded(
-                          flex: 1,
-                          child: InkWell(
-                            child: Card(
-                                shape: CircleBorder(
-                                    side: BorderSide(
-                                  color: Colors.deepOrange.withOpacity(0.6),
-                                )),
-                                child: Container(
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      Icons.share,
-                                      size: 25,
-                                      color: Colors.deepOrange[700],
-                                    ))),
-                            onTap: () {},
-                          )),
-                      Expanded(
-                        flex: 4,
-                        child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              /*   side: BorderSide(color: 
+        onPressed: () {
+          if (isFavorite) {
+            Common.removeFromFavorites(widget.curProduct.no);
+            setState(() {
+              isFavorite = false;
+            });
+          } else {
+            Common.addToFavorites(widget.curProduct.no);
+            setState(() {
+              isFavorite = true;
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  Widget priceCard() {
+    return Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+          /*   side: BorderSide(color: 
                             
                             Colors.deepOrange.withOpacity(0.6),
                             )*/
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30)),
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              child: AutoSizeText(
-                                "Fiyat: ${detailedProduct.priceText}",
-                                maxLines: 1,
-                                style: TextStyle(
-                                    color: Colors.grey[800],
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600),
-                                textAlign: TextAlign.center,
-                              ),
-                            )),
-                      ),
-                      Expanded(
-                          flex: 1,
-                          child: InkWell(
-                            child: Card(
-                                color: Colors.deepOrange,
-                                shape: CircleBorder(
-                                    /* side: BorderSide(
+        ),
+        child: Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
+          alignment: Alignment.center,
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: AutoSizeText(
+            "Fiyat: ${detailedProduct.priceText}",
+            maxLines: 1,
+            style: TextStyle(
+                color: Colors.grey[800],
+                fontSize: 18,
+                fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
+          ),
+        ));
+  }
+
+  Widget shareCard() {
+    return InkWell(
+      child: Card(
+          shape: CircleBorder(
+              side: BorderSide(
+            color: Colors.deepOrange.withOpacity(0.6),
+          )),
+          child: Container(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.share,
+                size: 25,
+                color: Colors.deepOrange[700],
+              ))),
+      onTap: () {},
+    );
+  }
+
+  Widget basketCard() {
+    return InkWell(
+      child: Card(
+          color: Colors.deepOrange,
+          shape: CircleBorder(
+              /* side: BorderSide(
                          //   color: Colors.indigo.shade900,
                             
                       )*/
-                                    ),
-                                child: Container(
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      Icons.add_shopping_cart,
-                                      size: 25,
-                                      color: Colors.white,
-                                    ))),
-                            onTap: () {
-                              // temp :: Common.resetFavorites();
-                               Common.addToBasket(widget.scaffoldKey,
-                                  widget.curProduct.no, context);
-                              /*.then((result){
+              ),
+          child: Container(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.add_shopping_cart,
+                size: 25,
+                color: Colors.white,
+              ))),
+      onTap: () {
+        // temp :: Common.resetFavorites();
+        Common.addToBasket(widget.scaffoldKey, widget.curProduct.no, context);
+        /*.then((result){
                               if (result)
                                 print("Eklendi");
                               else
                                 print("Zaten Eklenmiş");*/
-                            },
-                          )),
-                    ],
-                  ))),
-        ),
-      ],
+      },
     );
+  }
+
+  Widget titleCard() {
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(15))),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
+          color: Colors.white,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          detailedProduct.name,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            color: Colors.deepOrange[700],
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  Widget activityCard() {
+    return Card(
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Container(
+            padding: EdgeInsets.all(5),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(),
+                borderRadius: BorderRadius.circular(20)),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(flex: 1, child: favoriteCard()),
+                Expanded(flex: 1, child: shareCard()),
+                Expanded(
+                  flex: 4,
+                  child: priceCard(),
+                ),
+                Expanded(flex: 1, child: basketCard()),
+              ],
+            )));
   }
 }

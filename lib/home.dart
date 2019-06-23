@@ -172,20 +172,19 @@ class _HomeState extends State<Home> {
                           )
                         : OrientationBuilder(
                             builder: (context, curOrientation) {
-                             
-
-                                return GridView.builder(
-                                  itemCount: currentProductList.length,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: (curOrientation==Orientation.portrait)?2:3),
-                                  itemBuilder: (context, index) {
-                                    return GridItem(currentProductList[index]);
-                                  },
-                                );
-                              }
-                            
-                          ),
+                            return GridView.builder(
+                              itemCount: currentProductList.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: (curOrientation ==
+                                              Orientation.portrait)
+                                          ? 2
+                                          : 3),
+                              itemBuilder: (context, index) {
+                                return GridItem(currentProductList[index]);
+                              },
+                            );
+                          }),
                   )
                 ],
               )),
