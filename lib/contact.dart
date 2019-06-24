@@ -59,9 +59,9 @@ class _ContactState extends State<Contact> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      contactItem(Icons.call, "Telefon", "-"),
+                      //contactItem(Icons.call, "Telefon", "-"),
                       contactItem(
-                          Icons.email, "E-Posta", "-"),
+                          Icons.email, "E-Posta", "lekadesignandapps@mail.com"),
                       contactItem(Icons.camera_alt, "Instagram", "@fatosca_lezzetler")
                     ],
                   ))
