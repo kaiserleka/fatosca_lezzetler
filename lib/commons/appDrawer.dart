@@ -66,7 +66,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         drawerItem(title: "Beğendiklerim", target: "favorites"),
                         drawerItem(title: "İletişim", target: "contact"),
                         //drawerItem(title: "Günün Tarifi", target: ""),
-                        //drawerItem(title: "Mutfaktan Kareler", target: ""),
+                        drawerItem(title: "Mutfaktan Kareler", target: "kitchen"),
                       ],
                     ),
                   )),
@@ -109,6 +109,9 @@ class _AppDrawerState extends State<AppDrawer> {
       ),
       onTap: () {
         switch (target) {
+          case "kitchen":
+            Navigator.popAndPushNamed(context, "/kitchen");
+            break;
           case "favorites":
             Navigator.popAndPushNamed(context, "/favorites");
             break;

@@ -20,6 +20,7 @@ class Product {
     return Product(
         no: reqData["no"],
         name: reqData["name"],
+        price: reqData["price"],
         category: reqData["category"],
         thumb: reqData["images"][0]);
   }

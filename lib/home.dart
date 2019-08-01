@@ -7,6 +7,32 @@ import 'objects/product.dart';
 import 'commons/appDrawer.dart';
 import 'gridItem.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+
+//ads start
+MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['flutterio', 'beautiful apps'],
+  contentUrl: 'https://flutter.io',
+  birthday: DateTime.now(),
+  childDirected: false,
+  designedForFamilies: false,
+  gender:
+      MobileAdGender.male, // or MobileAdGender.female, MobileAdGender.unknown
+  testDevices: <String>[], // Android emulators are considered test devices
+);
+
+BannerAd myBanner = BannerAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: "ca-app-pub-4431352385358418/1991784153",//"ca-app-pub-4431352385358418~1205316096", //BannerAd.testAdUnitId,//
+  size: AdSize.smartBanner,
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("BannerAd event is $event");
+  },
+);
+//ads end
 
 class Home extends StatefulWidget {
   @override
@@ -32,7 +58,7 @@ class _HomeState extends State<Home> {
   String textValue;
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   update(String token) {
-    print("- / - " + token);
+    //print("- / - " + token);
     textValue = token;
     setState(() {});
   }
@@ -42,6 +68,10 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    //ads start
+    FirebaseAdMob.instance
+        .initialize(appId: "ca-app-pub-4431352385358418~1205316096");
+    //ads end
     //assert((isPageLoaded==true),"falsee");
     //currentProductList = productList;
 
@@ -95,6 +125,17 @@ class _HomeState extends State<Home> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    //ads start
+    myBanner
+      // typically this happens well before the ad is shown
+      ..load()
+      ..show(
+        // Positions the banner ad 60 pixels from the bottom of the screen
+        anchorOffset: 0.0,
+        // Banner Position
+        anchorType: AnchorType.bottom,
+      );
+    //ads end
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(

@@ -49,7 +49,7 @@ class _GridItemState extends State<GridItem> {
                               /*borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(15)),
                                 */
-                              color: Colors.deepOrange[800]),
+                              color: Colors.deepOrange[800].withOpacity(0.9)),
                           child: AutoSizeText(widget.curProduct.name,
                               maxLines: 1,
                               style: TextStyle(

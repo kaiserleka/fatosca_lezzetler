@@ -1,4 +1,5 @@
 import 'package:fatosun_mutfagi/contact.dart';
+import 'package:fatosun_mutfagi/kitchen.dart';
 import 'package:fatosun_mutfagi/recipeDetails.dart';
 import 'package:flutter/material.dart';
 import 'strings.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => new Home(), //new Favorites(), //
         '/favorites': (context) => new Favorites(),
         '/contact': (context) => new Contact(),
+        '/kitchen': (context) => new Kitchen()
       },
       onGenerateRoute: (RouteSettings settings) {
         List<String> pathElements = settings.name.split("/");

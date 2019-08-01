@@ -71,7 +71,7 @@ class _ContactState extends State<Contact> {
   Widget contactItem(icon, type, content) {
     return Card(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 30),
         child: Row(
           children: <Widget>[
             Expanded(

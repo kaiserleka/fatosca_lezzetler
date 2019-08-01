@@ -49,28 +49,34 @@ class Common {
   static showBasket(GlobalKey<ScaffoldState> key, context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var basketList = prefs.getStringList('basketList') ?? [];
+    List<int> itemNoList=[];
     //print("Sepet: ");
     List<Widget> basketItems = [];
     int totalPrice = 0;
-    List<Product> allItems;
-    getProductList(context: context).then((List<Product> productList) {
-      allItems = productList;
+    List<Product> reqItems;
+    for (var i = 0; i < basketList.length; i++) {
+        var list = basketList[i].split("/");
+        itemNoList.add(int.parse(list[0]));
+    }
+
+    getProductList(favorites: itemNoList ,context: context).then((List<Product> productList) {
+      reqItems = productList;
     }).whenComplete(() {
+      Product curProduct;
       for (var i = 0; i < basketList.length; i++) {
         var list = basketList[i].split("/");
         int curProductNo = int.parse(list[0]);
         int curProductAmount = int.parse(list[1]);
-        Product curProduct;
-        for (var j = 0; j < allItems.length; j++) {
-          if (allItems[j].no == curProductNo) {
-            curProduct = allItems[j];
+        
+        //for (var j = 0; j < reqItems.length; j++) {
+          //if (reqItems[j].no == curProductNo) {
+            curProduct = reqItems[i];
             basketItems
                 .add(basketItem(i, curProduct, curProductAmount, context));
-            totalPrice += 5;
-            //curProduct.priceValue * curProductAmount;
-            break;
-          }
-        }
+            totalPrice += curProduct.priceValue * curProductAmount;
+           // break;
+          //}
+     //   }
 
         //basketItems.add(basketItem(i, curProduct, curProductAmount, context));
         //
@@ -204,9 +210,8 @@ class Common {
                                         ),
                                       ),
                                       onTap: () {
-
                                         callInstagram();
-                                       /* Navigator.of(context).pop();
+                                        /* Navigator.of(context).pop();
                                         showDialog(
                                             context: context,
                                             builder: (context) {
@@ -354,7 +359,7 @@ class Common {
     });
   }
 
-  static Future<List<Product>> getProductList({favorites, context}) async {
+  static Future<List<Product>> getProductList({List favorites, context}) async {
     List<Product> productTempList = [];
     String errorText = "";
     String url;
@@ -362,6 +367,8 @@ class Common {
       url = "http://www.elidakitap.com/fatoscalezzetler/products.json";
     } else {
       url = "http://www.elidakitap.com/fatoscalezzetler/product.php?";
+      // diziyi küçükten büyüğe sırala
+      favorites.sort();
       for (var i = 0; i < favorites.length; i++) {
         url += "no[]=" + favorites[i].toString();
         if (i != favorites.length - 1) {
@@ -371,11 +378,12 @@ class Common {
     }
     List productDataList = [];
     //
+    print("url: "+url);
     //http.Response receivedData =
     await http.get(url, headers: {
       HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
     }).then((resultData) {
-      //print("Bağlantı var " + resultData.statusCode.toString());
+      print("Bağlantı durumu: " + resultData.statusCode.toString());
       if (resultData.statusCode == 200) {
         productDataList = jsonDecode(utf8.decode(resultData.bodyBytes));
       } else {
@@ -395,8 +403,8 @@ class Common {
             });
       }
     }).catchError((err) {
-      print("Sunucu Hatası " + err.toString());
-      errorText = "Sunucu Hatası";
+      print("Server Hatası " + err.toString());
+      errorText = "Sunucu Hatası";//+ err.toString();
       showDialog(
           context: context,
           builder: (context) {
@@ -433,12 +441,10 @@ class Common {
   }
 
   static callInstagram() async {
-    var instagramUrl =
-        "https://www.instagram.com/fatosca_lezzetler/";
+    var instagramUrl = "https://www.instagram.com/fatosca_lezzetler/";
     await canLaunch(instagramUrl)
         ? launch(instagramUrl)
         : print(
             "open whatsapp app link or do a snackbar with notification that there is no whatsapp installed");
   }
-
 }
